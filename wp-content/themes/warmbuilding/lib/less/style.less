@@ -256,7 +256,11 @@ body {
 	.wrap:after{.clearfix;}
 	.menu-primary{
 		padding: 0; margin: 0; float:right;
-		a{color: @ltblue;font-weight: bold;text-transform:uppercase;padding: 0.5em 1em;display: block;}
+		a{color: @ltblue;text-transform:uppercase;margin: 0.25em 1em;padding:0.25em 0;display: block;
+  -webkit-transition:color 1s ease-in;  
+   -moz-transition:color 1s ease-in;  
+   -o-transition:color 1s ease-in;  
+   transition:color 1s ease-in;  }
 		li.last-child {
 			a{padding-right: 0;}
 		}
@@ -280,7 +284,8 @@ body {
 .menu-secondary li a:active,.menu-secondary li a:hover,.menu-secondary .current_page_item a,.menu-secondary .current-cat a,.menu-secondary .current-menu-item a,
 #header .menu li a:active,#header .menu li a:hover,#header .menu .current_page_item a,#header .menu .current-cat a,#header .menu .current-menu-item a {
 	color: @white;
-	text-decoration: underline;
+	text-decoration: none;
+	border-bottom: 2px solid @white;
 }
 
 /*Sub Menu Drop Down link*/
