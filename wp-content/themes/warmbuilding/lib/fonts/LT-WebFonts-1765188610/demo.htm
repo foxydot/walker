@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Linotype.com Web Fonts Demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css">
+	    body { font-family:Arial, Sans-Serif; line-height:1.6em; font-size:13px; background-color: #e6e5e0; }
+        textarea { font-family: monospace; line-height:1.6em; font-size:11px; background-color: #eee; border:0; padding:10px; width:100%; height:350px; }
+	    h1 { font-size:2em; color:black; }
+	    h2 { font-size:1.2em; color: #888582; padding-bottom: 0.4em; margin-top: 1.5em; border-bottom:2px solid #ccc; }
+        .content { width:660px; padding:20px 40px; margin: 20px auto 40px; background: white; border-top: 6px solid #130f14;}
+	    .demo { font-weight:bold; font-style:normal; }
+	    .fontdisplay {font-size:2em;line-height:150%;margin: 10px 40px 0px 0px;}
+	    .guidelines { color:#333; }
+        pre { font-size:0.8em; padding:0 0 0 20px; }
+	    hr { border:0; border-bottom:1px solid #888582; margin:20px 0; }
+	    .link { color: #537094;text-decoration:none; font-weight:bold;}
+	    .uc {text-transform:uppercase}
+    </style>
+	<style type="text/css">
+	
+@import url("http://fast.fonts.net/lt/1.css?apiType=css&c=1b6a0783-d341-46bf-ab2b-aed0572fb0f2&fontids=675364,675334,808520");
+@font-face{
+font-family:"Trade Gothic W01 Roman";
+src:url("Fonts/675364/413d9688-00d4-47c4-bb55-656a0cd396e9.eot?#iefix");
+src:url("Fonts/675364/413d9688-00d4-47c4-bb55-656a0cd396e9.eot?#iefix") format("eot"),url("Fonts/675364/c4aef0d4-bfcf-4790-acf5-909881f411e8.woff") format("woff"),url("Fonts/675364/e741f29c-bc18-4343-bff3-db2465a0be3e.ttf") format("truetype"),url("Fonts/675364/853e2a9b-4057-42a5-ad7e-0762cda0b13c.svg#853e2a9b-4057-42a5-ad7e-0762cda0b13c") format("svg");
+}
+@font-face{
+font-family:"TradeGothicW01-BoldCn20 675334";
+src:url("Fonts/675334/257c802f-349c-4b4d-aefa-546d5de15ec6.eot?#iefix");
+src:url("Fonts/675334/257c802f-349c-4b4d-aefa-546d5de15ec6.eot?#iefix") format("eot"),url("Fonts/675334/5fdc935e-9e30-442a-bbe9-8d887b858471.woff") format("woff"),url("Fonts/675334/616c4c87-a077-43f4-a9f4-f01267c13818.ttf") format("truetype"),url("Fonts/675334/c901ad5f-a842-4549-a1f4-583a97f7e169.svg#c901ad5f-a842-4549-a1f4-583a97f7e169") format("svg");
+}
+@font-face{
+font-family:"TradeGothicW01-Extended";
+src:url("Fonts/808520/558189fc-efd3-4d8f-aa5f-8ddaf391bf47.eot?#iefix");
+src:url("Fonts/808520/558189fc-efd3-4d8f-aa5f-8ddaf391bf47.eot?#iefix") format("eot"),url("Fonts/808520/1b99d71c-c066-4ce3-b4af-38dfd9fe3d85.woff") format("woff"),url("Fonts/808520/8fa9ef8a-e824-4c25-a2ae-90b58c98c789.ttf") format("truetype"),url("Fonts/808520/aea6178e-a137-430d-9ebb-265f36bc6380.svg#aea6178e-a137-430d-9ebb-265f36bc6380") format("svg");
+}
+
+	</style>
+	</head>
+<body>
+    <div class="content">
+
+        <div style="background: url(http://www.linotype.com/css/images/header/header-logo.png) right -5px no-repeat; margin-bottom:2em;">
+            <h1 class="demo">Linotype.com Web Fonts</h1>
+            <p style="margin-top:-10px; font-size:1.2em;color:#888582"><b>@font-face css-only implementation instructions</b></p>
+        </div>
+        <p>
+            The CSS-only implementation does not require Javascript but can slightly delay loading of other page elements. Click here for <a class="link uc" href="demo-async.htm">asynchronous</a> web fonts implementation
+        </p>
+
+        <h2>Web Fonts contained in this kit</h2>
+        <div class="fontdisplay">
+		<div style="font-family:'Trade Gothic W01 Roman';"> Trade Gothic® WFS W01 Roman </div>
+<div style="font-family:'TradeGothicW01-BoldCn20 675334';"> Trade Gothic® WFS W01 Condensed Bold #20 </div>
+<div style="font-family:'TradeGothicW01-Extended';"> Trade Gothic® WFS W01 Extended </div>
+
+		</div>
+		
+        <div class="guidelines">
+            <h2>CSS Implementation Guidelines</h2>
+            <p>You and any third party web font hosting service are responsible for ensuring that the font software in the self-hosting kit, in its original format, can only be used on the Web Sites for which the self-hosting kit was downloaded and cannot be used or referenced by any other web site. This includes, but is not limited to installing adequate technical protection measures that restrict the use and/or access to the font software, for instance by utilizing JavaScript or access control mechanism for cross-origin resource sharing and protecting against use on web sites other than the Web Sites for which the self-hosting kit was downloaded by restricting domain access only to such Web Sites. You must also retain the page view tracking code on any Web Site that you self-host. In the event this Agreement terminates for any reason, the font software included with the self-hosting kit must be deleted from the server and all copies must be destroyed or returned to Monotype.</p>
+            <p>View <a class="link" href="http://linotype.com/license" target="_blank">"WEB FONT SOFTWARE" LICENSE AGREEMENT</a></p>
+            <p>Font file names have been obfuscated to protect the font software. You can identify font format based on file ending:</p>
+            <ul>
+                <li>1 - TrueType (ttf)</li>
+                <li>2 - Embedded OpenType (eot)</li>
+                <li>3 - Web Open Font Format (woff)</li>
+                <li>4 - Scalable Vector Graphics (svg)</li>
+            </ul>
+            <p class="uc"><b>Copy and paste the following code into the head section of the page</b></p>
+
+			<textarea>
+				<style type="text/css">
+				
+@import url("http://fast.fonts.net/lt/1.css?apiType=css&c=1b6a0783-d341-46bf-ab2b-aed0572fb0f2&fontids=675364,675334,808520");
+@font-face{
+font-family:"Trade Gothic W01 Roman";
+src:url("Fonts/675364/413d9688-00d4-47c4-bb55-656a0cd396e9.eot?#iefix");
+src:url("Fonts/675364/413d9688-00d4-47c4-bb55-656a0cd396e9.eot?#iefix") format("eot"),url("Fonts/675364/c4aef0d4-bfcf-4790-acf5-909881f411e8.woff") format("woff"),url("Fonts/675364/e741f29c-bc18-4343-bff3-db2465a0be3e.ttf") format("truetype"),url("Fonts/675364/853e2a9b-4057-42a5-ad7e-0762cda0b13c.svg#853e2a9b-4057-42a5-ad7e-0762cda0b13c") format("svg");
+}
+@font-face{
+font-family:"TradeGothicW01-BoldCn20 675334";
+src:url("Fonts/675334/257c802f-349c-4b4d-aefa-546d5de15ec6.eot?#iefix");
+src:url("Fonts/675334/257c802f-349c-4b4d-aefa-546d5de15ec6.eot?#iefix") format("eot"),url("Fonts/675334/5fdc935e-9e30-442a-bbe9-8d887b858471.woff") format("woff"),url("Fonts/675334/616c4c87-a077-43f4-a9f4-f01267c13818.ttf") format("truetype"),url("Fonts/675334/c901ad5f-a842-4549-a1f4-583a97f7e169.svg#c901ad5f-a842-4549-a1f4-583a97f7e169") format("svg");
+}
+@font-face{
+font-family:"TradeGothicW01-Extended";
+src:url("Fonts/808520/558189fc-efd3-4d8f-aa5f-8ddaf391bf47.eot?#iefix");
+src:url("Fonts/808520/558189fc-efd3-4d8f-aa5f-8ddaf391bf47.eot?#iefix") format("eot"),url("Fonts/808520/1b99d71c-c066-4ce3-b4af-38dfd9fe3d85.woff") format("woff"),url("Fonts/808520/8fa9ef8a-e824-4c25-a2ae-90b58c98c789.ttf") format("truetype"),url("Fonts/808520/aea6178e-a137-430d-9ebb-265f36bc6380.svg#aea6178e-a137-430d-9ebb-265f36bc6380") format("svg");
+}
+
+				</style>
+			</textarea>
+            <h2>Licensing information should be included within the CSS</h2>
+<pre>/*
+This CSS resource incorporates links to font software which is the valuable copyrighted
+property of Monotype and/or its suppliers. You may not attempt to copy, install,
+redistribute, convert, modify or reverse engineer this font software. Please contact Monotype
+with any questions regarding Web Fonts:  http://www.linotype.com
+*/</pre>
+        </div>
+    </div>
+</body>
+</html>

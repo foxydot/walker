@@ -1,0 +1,29 @@
+@import 'elements';
+@import 'mixins';
+
+#inner {display: none;}
+#hp-bot{
+	margin: 10px 0;
+	.widget{
+		.gradient(@ltgrey,@ltgrey,@white);
+		text-align: center;
+		.widget-wrap{
+			padding: 30px;
+		}
+	}
+	
+	.widget_text, .widget_sp_image {
+		.widgettitle{
+			.georgia;
+			font-style: italic;
+			color: @ltblue;
+			text-transform: none;
+			font-size: 1.5em;
+			padding: 1em 0 0 0;
+		}
+		p{
+	    	font-size: 14px;
+	    }
+	}
+}
+#hp-bot:after{.clearfix;}
