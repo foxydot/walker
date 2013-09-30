@@ -323,7 +323,7 @@ if ( ! class_exists( 'Bit51Foo' ) ) {
 							</div>
 						</div>
 					</div>
-					<div class="postbox-container side" style="width:20%;">
+					<div class="postbox-container side" style="width:25%;">
 						<div class="metabox-holder">	
 							<div class="meta-box-sortables">
 								<?php
@@ -618,11 +618,13 @@ if ( ! class_exists( 'Bit51Foo' ) ) {
 				</table>';
 
 				add_filter( 'wp_mail_content_type', array($this, 'set_html_content_type' ) );
-				wp_mail(
-					$this->support_email,
-					__('Better WP Security Support Ticket', $this->hook),
-					$message
-				);
+				if ( function_exists( 'wp_mail' ) ) {
+					wp_mail(
+						$this->support_email,
+						__('Better WP Security Support Ticket', $this->hook),
+						$message
+					);
+				}
 				remove_filter( 'wp_mail_content_type', array($this, 'set_html_content_type' ) ); // reset content-type to to avoid conflicts
 			}
 		}

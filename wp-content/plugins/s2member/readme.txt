@@ -1,7 +1,7 @@
 === s2Member® Framework (Member Roles, Capabilities, Membership, PayPal Members) ===
 
-Version: 130617
-Stable tag: 130617
+Version: 130816
+Stable tag: 130816
 
 SSL Compatible: yes
 bbPress® Compatible: yes
@@ -16,7 +16,7 @@ Authorize.Net® Compatible: yes w/s2Member® Pro
 Google® Checkout Compatible: yes w/s2Member® Pro
 ClickBank® Compatible: yes w/s2Member® Pro
 
-Tested up to: 3.6-alpha
+Tested up to: 3.7-alpha
 Requires at least: 3.3
 
 Copyright: © 2009 WebSharks, Inc.
@@ -66,7 +66,7 @@ Yes. s2Member and s2Member Pro, are also both compatible with Multisite Networki
 
 **NOTE:** Please do NOT use the WordPress® forums to seek company support. Support for s2Member® is handled in [our own support forums](http://www.s2member.com/forums/).
 
-[youtube http://www.youtube.com/watch?v=neGsNjWhOBs /]
+[youtube http://www.youtube.com/watch?v=2C3Lan7vxw0 /]
 
 The s2Member® Framework (free) integrates with PayPal® Website Payments Standard (also free), and fully supports recurring billing. s2Member supports custom Pages for registration (including Custom Registration/Profile Fields), account access, and a lot more. s2Member is compatible with Multisite Networking too, and even with BuddyPress and bbPress. With the s2Member® Pro add-on (an optional paid upgrade), you can add support for unlimited Membership Levels, PayPal® Website Payments Pro (w/ Pro Forms to facilitate on-site credit card processing), Authorize.Net® (also with Pro Forms), Google® Checkout, ClickBank®, advanced User Import/Export tools, the ability to use Coupon Codes, and many other enhancements. Videos available at: [s2Member.com / Videos](http://www.s2member.com/videos/).
 
@@ -92,10 +92,38 @@ Please see [this FAQ entry](http://www.s2member.com/faqs/#s2-faqs-translations)
 
 == Upgrade Notice ==
 
-= v130617 =
+= v130816 =
 (Maintenance Release) Upgrade immediately.
 
 == Changelog ==
+
+= v130816 =
+* (s2Member Pro) **Compatibility, ClickBank (#467)** Improving support for ClickBank PitchPlus Upsell Flows. Please see [this thread](http://www.s2member.com/forums/topic/clickbank-buttons-not-working/#post-55725) for further details.
+* (s2Member/s2Member Pro) **User Search on Multisite Networks (#468)** User search functionality was partially broken for Child Blogs in a Multisite Network after some improvements were implemented in s2Member® v130731. The issue has now been corrected in this release for Multisite Networks. For further details, please see [this thread](http://www.s2member.com/forums/topic/user-search-no-longer-working/#post-55778).
+* (s2Member/s2Member Pro) **Z-Index in Menu Pages (#461)** Stacking order against a WordPress® installation running a Dashboard with a collapsed sidebar menu (left side) was causing some UI problems. Fixed in this release.
+* (s2Member/s2Member Pro) **SSL Compatibility (#437)** Adding a new option in the `s2Member® -› General Options -› Login Welcome Page` section. The default value for this new option is always `yes`. However, the default functionality can be turned off (if you prefer). This new option allows site owners to better integrate with a core WordPress® feature commonly referred to as `FORCE_SSL_LOGIN` and/or `FORCE_SSL_ADMIN`. This new feature can be used, or not. It is intended mainly for site owners running w/ `FORCE_SSL_LOGIN` and/or `FORCE_SSL_ADMIN`.
+* (s2Member/s2Member Pro) **Login/Registration Design Option (#437)** Adding a new option in the `s2Member® -› General Options -› Login/Registration Design` section. This new option (found at the bottom of `s2Member® -› General Options -› Login/Registration Design`) allows a site owner to show/hide the `Back To Home Page` link at the bottom of the default WordPress® Login/Registration system. This can be useful for site owners running w/ `FORCE_SSL_LOGIN` and/or `FORCE_SSL_ADMIN`; where they would prefer NOT to link customers back to the main site under a default HTTPS link; but rather, create their own link and gain better control over this area of their site.
+* (s2Member/s2Member Pro) **Videos (#467)** Updating internal documentation found in `Dashboard -› s2Member® -› Quick-Start`. Specifically, the video player here was integrated with an older version of the YouTube® API and was not working properly. Fixed in this release.
+
+= v130802 =
+* (s2Member Pro) **Compatibility, WordPress® v3.6** Updating s2Member® Pro Form templates and their underlying CSS. This update improves their appearance against the Twenty Thirteen theme that comes with WordPress® v3.6. Specifically, some of the Pro Form buttons were a little out of place in this new default theme. Fixed in this release.
+* (s2Member Pro) **Compatibility, Checkout Options (#443)** Revision 3. Updating this feature to support a wider variety of WordPress® configurations and content filters. This update also resolves an empty `desc=""` attribute error reported by some site owners. Feature description... It is now possible to build dropdown menus offering your customers a variety of options using a Single Pro Form. This is accomplished quite easily using Shortcodes. For full details and examples, please check this section of your Dashboard in the latest release. See: `s2Member® -› PayPal® Pro Forms -› Wrapping Multiple Shortcodes as "Checkout Options"`. NOTE: this works for PayPal® Pro Forms, and ALSO for Authorize.Net Pro Forms.
+
+= v130801 =
+* (s2Member Pro) **New Feature; Checkout Options (#403)** Revision 2. Updating documentation on this new feature to prevent conufusion for site owners. s2Member® Pro now supports "Checkout Options". It is now possible to build dropdown menus offering your customers a variety of options using a Single Pro Form. This is accomplished quite easily using Shortcodes. For full details and examples, please check this section of your Dashboard in the latest release. See: `s2Member® -› PayPal® Pro Forms -› Wrapping Multiple Shortcodes as "Checkout Options"`. NOTE: this works for PayPal® Pro Forms, and ALSO for Authorize.Net Pro Forms.
+
+= v130731 =
+* (s2Member Pro) **New Feature; Checkout Options (#403)** s2Member® Pro now supports "Checkout Options". It is now possible to build dropdown menus offering your customers a variety of options using a Single Pro Form. This is accomplished quite easily using Shortcodes. For full details and examples, please check this section of your Dashboard in the latest release. See: `s2Member® -› PayPal® Pro Forms -› Wrapping Multiple Shortcodes as "Checkout Options"`. NOTE: this works for PayPal® Pro Forms, and ALSO for Authorize.Net Pro Forms.
+* (s2Member Pro) **Free Checkout (#403)** It is now possible to offer a 100% free checkout experience using any of s2Member's Pro Form Shortcodes. In previous releases of s2Member® it was not possible to set the `ra=""` Attribute to a zero dollar amount. Now it is! This works for PayPal® Pro Forms, and also for Authorize.Net Pro Forms.
+* (s2Member Pro) **100% Off Coupons (#403)** It is now possible to offer a 100% off coupon. This works for PayPal® Pro Forms, and also for Authorize.Net Pro Forms. See: `s2Member® -› Pro Coupon Codes` for details and examples.
+* (s2Member Pro) **Expiration Date Dropdowns (#428)** This release improves all s2Member® Pro Form templates by adding dropdown menus for the customer's credit card expiration month/year instead of the simple text input field used in previous releases.
+* (s2Member/s2Member Pro) **MySQL Wait Timeout (#349)** s2Member now automatically increases the MySQL `wait_timeout` to `300` seconds during s2Member processing routines. Reason for increase: should any 3rd party service API result in unexpected connection timeouts (such as PayPal, Authorize.Net, Amazon, MailChimp, AWeber, etc); this may cause a delay that could potentially exceed the default `wait_timeout` of `30` seconds on the MySQL resource handle that is global to all of WordPress. Increasing `wait_timeout` before transaction processing will decrease the chance of failure after a timeout is exceeded. Among other things, this resolves an elusive bug where there are mysterious 404 errors after checkout under the right scenario (e.g. when an unexpected timeout occurs). This may also resolve problems associated w/ some mysterious reports where emails were not sent during s2Member's attempt to complete post-processing of a transaction (and/or where other portions of post-processing failed under rare circumstances).
+* (s2Member/s2Member Pro) **Alternative Views (#300)** This release gives s2Member® the ability to hide protected content in widgets that list protected WordPress® Pages. This is a new Alternative View in the Dashboard. See: `s2Member® -› Restriction Options -› Alternative Views` for further details please.
+* (s2Member/s2Member Pro) **Documentation Update (#350)** Subtle improvements to the built-in documentation pertaining to s2Member's Automatic List Transitioning feature in the Dashboard. See: `s2Member® -› API/List Servers -› Automatic Unsubscribes` for further details please.
+* (s2Member/s2Member Pro) **Bug Fix (#387)** In s2Member® Only mode, a recursive scan for the WordPress® `/wp-load.php` file was failing somtimes when/if a custom directory was configured for plugins. Fixed in this release. See [this thread](http://www.s2member.com/forums/topic/problem-with-wordpress-folder-search-code/) for further details.
+* (s2Member/s2Member Pro) **Bug Fix (#418)** Fixed incorrect pagination of user search results in the Dashboard.
+* (s2Member/s2Member Pro) **Bug Fix (#418)** Fixed slow query against user searches in the Dashboard.
+* (s2Member/s2Member Pro) **Bug Fix (#418)** Fixed incorrect result totals under some rare scenarios in user search results.
 
 = v130617 =
 * (s2Member/s2Member Pro) **IP Restrictions (#148)** It is now possible to introduce a custom template file that controls the error message displayed when/if a user breaches security by exceeding your maximum unique IP addresses; as configured under `s2Member -› Restriction Options -› Unique IP Restrictions`. If you would like to use a custom template for this message, please copy the default template file from `/s2member/includes/templates/errors/ip-restrictions.php` and place this file into your active WordPress® theme directory (or into the `/wp-content/` directory if you prefer). s2Member will automatically find your custom template in one of these locations; and s2Member will use your custom template instead of the built-in default.
@@ -103,6 +131,8 @@ Please see [this FAQ entry](http://www.s2member.com/faqs/#s2-faqs-translations)
 * (s2Member Pro) **Amazon S3 Secret Access Keys (#321)** Updating UI configuration panel to better explain what a Secret Access Key is; and adding a note about Secret Access Keys for Amazon S3 integration. Amazon® is deprecating Secret Access Keys, but they ARE still required for digitally signed URLs. This update changes nothing in s2Member's functionality. It simply adds some additional detail to a configuration field that will assist site owners integrating s2Member w/ Amazon S3 for the first time.
 * (s2Member/s2Member Pro) **Translations (#317)** Updating `/s2member/includes/translations/translations.txt` (README file). Adding blurp about fuzzy translation entries in existing PO files that translate s2Member. This contains some additional tips on how to update existing PO files upon each release of s2Member and/or s2Member Pro.
 * (s2Member/s2Member Pro) **Bug Fix (#321)** Fixing bug in `/s2member/includes/templates/cfg-files/s2-cross-xml.php` for S3 Buckets (resulting in `crossdomain.xml`). This file contained a parse error and was causing some problems for site owners integrating Adobe Flash content served via Amazon S3. Fixed in this release.
+* (s2Member Pro) **PayPal Pro Forms (#315)** Adding note in the Dashboard here (`s2Member -› PayPal Pro Forms -› Shortcode Attributes Explained`). In the list of Shortcode Attributes we are adding a note regarding max character length for the `desc=""` Attribute in a PayPal Pro Form Shortcode. This can be as long as you like. However, all descriptions passed through PayPal® APIs are truncated automatically to 60 characters max (e.g. the maximum allowed length for PayPal® descriptions is 60 characters). Nothing new here, but we thought it would be a good idea to clarify this behavior in the documentation. Updated in this release.
+* (s2Member Pro) **PayPal Pro Forms (#312)** Preventing the use of multiple Pro Forms in the same Post/Page. This has never been possible, it is known to break the functionality of s2Member Pro Forms. Please limit Pro Form Shortcodes to ONE for each Post/Page; and do NOT attempt to use more than one Pro Form Shortcode on the same Post/Page (at the same time). In this release we have added a friendly JavaScript alert/warning for site owners that attempt this, so that problems and confusion can be avoided in this unlikely scenario.
 
 = v130513 =
 * (s2Member/s2Member Pro) **s2Stream Shortcode Bug Fix (#256)** Fixing a bug first introduced in the previous release where we added support for `player_aspectratio`. This quick update corrects the PHP parse error at line #154 of `sc-files-in.inc.php`. It also corrects the behavior of the `player_height=""` and `player_aspectratio=""` Shortcode Attributes for the `s2Stream` Shortcode. Many thanks to everyone that reported this bug.
