@@ -50,17 +50,19 @@ function msdlab_do_post_pagetop() {
 	$pagetop_title = $pagetop_metabox->get_the_value('pagetop_title');
 	$pagetop_content = $pagetop_metabox->get_the_value('pagetop_content');
 
-	if ( strlen( $pagetop_title ) == 0 && strlen( $pagetop_content ))
+	if ( strlen( $pagetop_title ) == 0 && strlen( $pagetop_content ) == 0)
 		return;
 
 	$pagetop_title = apply_filters( 'genesis_post_title_output', apply_filters( 'genesis_post_title_text',$pagetop_title) );
-	$pagetop_content = apply_filters('the_content', $pagetop_content);
+    add_filter('pagetop_content','do_shortcode');
+    $pagetop_content = apply_filters('pagetop_content', $pagetop_content);
+    $pagetop_content = apply_filters('the_content', $pagetop_content);
 	print '<div id="pagetop">';
 	do_action('pagetop_image');
-	print '<div class="content">
-				<h2 class="entry-title">'.$pagetop_title.'</h2>
-				<div class="entry-content">'.$pagetop_content.'</div>
-		</div>
+	print '<div class="content">';
+				if($pagetop_title!=''){print '<h2 class="entry-title">'.$pagetop_title.'</h2>';}
+				if($pagetop_content!=''){print '<div class="entry-content">'.$pagetop_content.'</div>';}
+	print	'</div>
 			</div>';
 
 }
