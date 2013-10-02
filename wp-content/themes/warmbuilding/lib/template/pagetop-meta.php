@@ -9,6 +9,9 @@
 	</p>
 	<p>
 		<?php $mb->the_field('pagetop_content'); 
-		wp_editor($mb->get_the_value(),$mb->get_the_name(),array()); ?>
+        $settings = array(
+        'textarea_name' => $mb->get_the_name(),
+        );
+		wp_editor($mb->get_the_value(),'pagetop',$settings); ?>
 	</p>
 </div>

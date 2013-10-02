@@ -9,7 +9,7 @@
  
 .my_meta_control span,
 .settings_control span
-{ color:#999; display:block; }
+{ color:#999; }
  
 .my_meta_control textarea, .my_meta_control input[type='text']
 { margin-bottom:3px; width:99%; }
