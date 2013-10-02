@@ -70,10 +70,9 @@ textarea,
 input,
 select,
 textarea {
-	.box-shadow(inset 0 1px 5px @medgrey);
-	.rounded(6px);
+	border: 1px solid @ltgrey;
 	font-size: 12px;
-	padding: 5px;
+	padding: 12px;
 }
 
 /* Hyperlinks
@@ -949,6 +948,17 @@ input.searchsubmit:hover {
 .aligncenter {text-align: center;margin: 0 auto;display: block;}
 
 /* Gravity Forms */
+.contact{
+  .gform_wrapper{
+    margin: 0;
+    input[type="text"],select,textarea{
+      .tradegothic;
+      padding: 12px;
+      width: 90% !important;
+      }
+    br {font-size: 0;line-height: 0;}
+  }
+}
 
 /* ETC */
 #pagetop {
@@ -988,4 +998,4 @@ input.searchsubmit:hover {
 	}
 }
 .contact .entry-title{display: none;}
-.experience .content-entry strong {color: @blue;}
+.experience .entry-content strong {color: @blue;}
