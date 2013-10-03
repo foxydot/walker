@@ -50,7 +50,7 @@ function msdlab_do_post_pagetop() {
 	$pagetop_title = $pagetop_metabox->get_the_value('pagetop_title');
 	$pagetop_content = $pagetop_metabox->get_the_value('pagetop_content');
 
-	if ( strlen( $pagetop_title ) == 0 && strlen( $pagetop_content ) == 0)
+	if ( strlen( $pagetop_title ) == 0 && strlen( $pagetop_content ) == 0 && !has_post_thumbnail())
 		return;
 
 	$pagetop_title = apply_filters( 'genesis_post_title_output', apply_filters( 'genesis_post_title_text',$pagetop_title) );
