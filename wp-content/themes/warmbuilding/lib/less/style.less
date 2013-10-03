@@ -732,7 +732,13 @@ h1.entry-title, h2.entry-title {
 
 input[type="button"],
 input[type="submit"] {
-	.button(@blue);
+	background-color: @blue;
+	width: 96.5%;
+	display: block;
+	color: @white;
+	text-align: center;
+	margin: 1px 0;
+	text-transform: uppercase;
 }
 
 /* Search Form
@@ -957,6 +963,13 @@ input.searchsubmit:hover {
       width: 90% !important;
       }
     br {font-size: 0;line-height: 0;}
+    form li.gfield {
+      margin-bottom: 1.5em;
+    }
+   .gform_footer{
+     margin:0;
+     padding: 0;
+   }
   }
 }
 
