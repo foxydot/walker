@@ -9,19 +9,36 @@ if ( !defined('ABSPATH') )
 	die('-1');
 
 echo $before_widget;
-
-echo $this->get_image_html( $instance, true );
-
-if ( !empty( $title ) ) { echo $before_title . $title . $after_title; }
-
-if ( !empty( $description ) ) {
-	echo '<div class="'.$this->widget_options['classname'].'-description" >';
-	echo wpautop( $description );
-	echo "</div>";
-}
-if ( $link ) {
-	$linktext = $linktext != ''?$linktext:'Read More';
-	echo '<div class="link"><a class="'.$this->widget_options['classname'].'-link readmore" href="'.$link.'" target="'.$linktarget.'">'.$linktext.' ></a><div class="clear"></div></div>';
+if(is_front_page()){
+    if ( $link ) {
+        echo '<a class="'.$this->widget_options['classname'].'-link" href="'.$link.'" target="'.$linktarget.'">';
+    }
+        echo $this->get_image_html( $instance, false );
+        
+        if ( !empty( $title ) ) { echo $before_title . $title . $after_title; }
+        
+        if ( !empty( $description ) ) {
+            echo '<div class="'.$this->widget_options['classname'].'-description" >';
+            echo wpautop( $description );
+            echo "</div>";
+        }
+    if ( $link ) {
+        echo '</a>';
+    }
+} else {
+    echo $this->get_image_html( $instance, true );
+    
+    if ( !empty( $title ) ) { echo $before_title . $title . $after_title; }
+    
+    if ( !empty( $description ) ) {
+    	echo '<div class="'.$this->widget_options['classname'].'-description" >';
+    	echo wpautop( $description );
+    	echo "</div>";
+    }
+    if ( $link ) {
+    	$linktext = $linktext != ''?$linktext:'Read More';
+    	echo '<div class="link"><a class="'.$this->widget_options['classname'].'-link readmore" href="'.$link.'" target="'.$linktarget.'">'.$linktext.' ></a><div class="clear"></div></div>';
+    }
 }
 echo '<div class="clear"></div>';
 echo $after_widget;

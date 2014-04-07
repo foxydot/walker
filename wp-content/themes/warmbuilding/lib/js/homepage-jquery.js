@@ -3,4 +3,11 @@ jQuery(document).ready(function($) {
 	$('.footer-widgets-1').addClass('cols-'+numwidgets);
 	$('.footer-widgets-1 .widget,.footer-widgets-1 .widget .widget-wrap').equalHeights();
 	$('.equalize').equalHeights();
+	
+	$('#hp-bot .two-fifths a.widget_sp_image-link').mouseenter(function(){
+	    var src = origsrc = $(this).find('img').attr('src');
+	    $(this).find('img').attr('src',src.replace('.png','-over.png'));
+	}).mouseleave(function(){
+        $(this).find('img').attr('src',origsrc);
+	});
 });
