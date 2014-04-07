@@ -12,6 +12,7 @@
         $settings = array(
         'textarea_name' => $mb->get_the_name(),
         );
-		wp_editor($mb->get_the_value(),'pagetop',$settings); ?>
+        $mb_content = html_entity_decode($mb->get_the_value(), ENT_QUOTES, 'UTF-8');
+		wp_editor($mb_content,'pagetop',$settings); ?>
 	</p>
 </div>
