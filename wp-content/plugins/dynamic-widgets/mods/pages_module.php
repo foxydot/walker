@@ -2,7 +2,7 @@
 /**
  * Pages Module
  *
- * @version $Id: pages_module.php 577792 2012-07-26 18:09:15Z qurl $
+ * @version $Id: pages_module.php 863947 2014-02-24 09:53:16Z qurl $
  * @copyright 2011 Jacco Drabbe
  */
 
@@ -111,7 +111,14 @@
 					} else {
 						$childs = $opt_tax_childs->act;
 					}
-					DW_CustomPost::prtTax($tax_type->name, $tree, $opt_tax->act, $childs, 'page-tax_' . $tax_type->name);
+
+					echo '<input type="hidden" id="page-tax_' . $tax_type->name . '_act" name="page-tax_' . $tax_type->name . '_act" value="' . implode(',', $opt_tax->act) . '" />';
+					if ( isset($opt_tax_childs) ) {
+						echo '<input type="hidden" id="page-tax_' . $tax_type->name . '_childs_act" name="page-tax_' . $tax_type->name . '_childs_act" value="' . implode(',', $opt_tax_childs->act) . '" />';
+					}
+
+					// DW_CustomPost::prtTax($tax_type->name, $tree, $opt_tax->act, $childs, 'page-tax_' . $tax_type->name);
+					DW_CustomPost::prtTax($widget_id, $tax_type->name, $tree, $opt_tax->act, $childs, 'page-tax_' . $tax_type->name);
 					echo '</div>';
 					echo '</div>';
 				}
@@ -136,17 +143,17 @@
 			$this->post_page = get_option('page_for_posts');
 		}
 
-		function start_lvl(&$output, $depth) {
+		function start_lvl(&$output, $depth = 0, $args = array()) {
 			$indent = str_repeat("\t", $depth);
 			$output .= "\n" . $indent . '<div style="position:relative;left:15px;width:95%;">' . "\n";
 		}
 
-		function end_lvl(&$output, $depth) {
+		function end_lvl(&$output, $depth = 0, $args = array()) {
 			$indent = str_repeat("\t", $depth);
 			$output .= $indent . '</div>' . "\n";
 		}
 
-		function start_el(&$output, $page, $depth, $args, $current_page) {
+		function start_el(&$output, $page, $depth = 0, $args = array(), $current_object_id = 0) {
 			extract($args, EXTR_SKIP);
 
 			if ( $depth ) {
@@ -167,7 +174,7 @@
 			}
 		}
 
-		function end_el(&$output, $page, $depth) {
+		function end_el(&$output, $page, $depth = 0, $args = array()) {
 			// Just an empty function, making sure parent::end_el() does not fire
 			return;
 		}

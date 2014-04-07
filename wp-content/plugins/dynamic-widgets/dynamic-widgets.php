@@ -4,7 +4,7 @@
  * Plugin URI: http://www.qurl.nl/dynamic-widgets/
  * Description: Dynamic Widgets gives you full control on which pages your widgets will appear. It lets you dynamicly show or hide widgets on WordPress pages.
  * Author: Qurl
- * Version: 1.5.4
+ * Version: 1.5.7
  * Author URI: http://www.qurl.nl/
  * Tags: widget, widgets, dynamic, sidebar, custom, rules, logic, admin, condition, conditional tags, hide, show, wpml, qtranslate, wpec, buddypress, pods
  *
@@ -15,19 +15,23 @@
  *
  * Released under the GPL v.2, http://www.gnu.org/copyleft/gpl.html
  *
- * @version $Id: dynamic-widgets.php 639724 2012-12-15 16:23:24Z qurl $
+ * @version $Id: dynamic-widgets.php 864301 2014-02-24 20:50:40Z qurl $
  * @copyright 2011 Jacco Drabbe
  *
  * Thanks to Alexis Nomine for the contribution of the French (fr_FR) language files, several L10N fixes and change of the edit options UI.
  * Thanks to Daniel Bihler for the contribution of the German (de_DE) language files.
  * Thanks to Eduardo Larequi for the contribution of the Spanish (es_ES) language files and several L10N fixes.
  * Thanks to Hanolex for the contribution of the Chinese (Simplified) (zh_CN) language files.
- * Thanks to Liudas Ali�auskas for the contribution of the Lithuanian (lt_LT) language files.
+ * Thanks to Liudas Ališauskas for the contribution of the Lithuanian (lt_LT) language files.
  * Thanks to Pedro Nave for the contribution of the Portuguese (pt_PT) language files.
  * Thanks to Renato Tavares for the contribution of the Brazil Portuguese (pt_BR) language files.
  * Thanks to Pavel Bilek for the contribution of the Chech (cs_CZ) language files.
  * Thanks to Morten Nalholm for the contribution of the Danish (da_DK) language files.
  * Thanks to Scott Kingsley Clark for the help to get the Pods module upgraded to support Pods v2.
+ * Thanks to Sébastien Christy for the help finding a PHP bug preventing the exposure of class properties while in the right scope.
+ * Thanks to Rick Anderson from Build Your Own Business Website (http://www.byobwebsite.com/) for the financial contribution to implement the AJAX lazy load taxonomy tree and the modules filter
+ * Thanks to Advancis (http://advancis.net/) for the help and financial contribution to find and fix a WPML category bug.
+ * Thanks to Borisa Djuraskovic for the contribution of the Serbo-Croatian (sr_RS) languages files.
  *
  *
  * WPML Plugin support via API
@@ -66,14 +70,13 @@
   define('DW_LIST_STYLE', 'style="overflow:auto;height:240px;"');
   define('DW_OLD_METHOD', get_option('dynwid_old_method'));
   define('DW_PAGE_LIMIT', get_option('dynwid_page_limit', 500));
-  define('DW_MINIMUM_PHP', '5.1.0');
+  define('DW_MINIMUM_PHP', '5.2.7');
   define('DW_MINIMUM_WP', '3.0');
   define('DW_MODULES', dirname(__FILE__) . '/' . 'mods/');
   define('DW_PLUGIN', dirname(__FILE__) . '/' . 'plugin/');
   define('DW_TIME_LIMIT', 86400);				// 1 day
   define('DW_URL_AUTHOR', 'http://www.qurl.nl');
-  define('DW_VERSION', '1.5.4');
-  define('DW_VERSION_URL_CHECK', DW_URL_AUTHOR . '/wp-content/uploads/php/dw_version.php?v=' . DW_VERSION . '&n=');
+  define('DW_VERSION', '1.5.6.1');
 	define('DW_WPML_API', '/inc/wpml-api.php');			// WPML Plugin support - API file relative to ICL_PLUGIN_PATH
 	define('DW_WPML_ICON', 'img/wpml_icon.png');	// WPML Plugin support - WPML icon
 
@@ -151,7 +154,7 @@
 					$wpdb->query($query);
 				}
 			}
-			
+
 			/*
 			1.5.3.1 > Widgets seems to be started using longer classnames to avoid clashing.
 			Widend up the width for widget_id from 40 to 60.
@@ -515,22 +518,6 @@
   }
 
   /**
-   * dynwid_check_version() Displays changelog with latest version compared to installed version
-   * @param mixed $plugin_data
-   * @param object $r
-   * @since 1.3.1
-   */
-  function dynwid_check_version($plugin_data, $r) {
-    $check = wp_remote_fopen(DW_VERSION_URL_CHECK . $r->new_version);
-
-    if ( $check && ! empty($check) ) {
-      echo '<div style="font-weight:normal;">';
-      echo $check;
-      echo '</div>';
-    }
-  }
-
-  /**
    * dynwid_contextual_help_text() Actual text to place into the contextual help screen
    * @param string $screen
    * @return string
@@ -557,6 +544,15 @@
   }
 
   /**
+   * dynwid_disabled_add_admin_menu() Menu entry for disabled page.
+   * @since 1.5.6.1
+   *
+   */
+	function dynwid_disabled_add_admin_menu() {
+		add_submenu_page('themes.php', __('Dynamic Widgets', DW_L10N_DOMAIN), __('Dynamic Widgets', DW_L10N_DOMAIN), 'edit_theme_options', 'dynwid-config', 'dynwid_disabled_page');
+	}
+
+  /**
    * dynwid_disabled_page() Error boxes to show in admin when DW can not be initialised due to not meeting sysreq.
    * @since 1.5b1
    *
@@ -570,7 +566,6 @@
   		echo '<div class="error" id="message"><p>';
   		_e('<b>ERROR</b> Your host is running a too low version of PHP. Dynamic Widgets needs at least version', DW_L10N_DOMAIN);
   		echo ' ' . DW_MINIMUM_PHP . '.';
-  		echo '<br />See <a href="' . DW_URL_AUTHOR . '/question/my-hoster-is-still-using-php4-so-what/">this page</a> why.';
   		echo '</p></div>';
   	}
 
@@ -631,10 +626,12 @@
   				add_action('add_meta_boxes', 'dynwid_add_admin_custom_box');
   				add_action('edit_tag_form_fields', 'dynwid_add_tag_page');
   				add_action('edited_term', 'dynwid_save_tagdata');
-  				add_action('in_plugin_update_message-' . plugin_basename(__FILE__), 'dynwid_check_version', 10, 2);
   				add_action('plugin_action_links_' . plugin_basename(__FILE__), 'dynwid_add_plugin_actions');
   				add_action('save_post', 'dynwid_save_postdata');
   				add_action('sidebar_admin_setup', 'dynwid_add_widget_control');
+
+  				// AJAX calls
+  				add_action('wp_ajax_term_tree', 'dynwid_term_tree');
   			}
   		} else {
   			if ( $DW->enabled ) {
@@ -642,8 +639,10 @@
   			}
   		}
   	} else {
-  		// Show errors in the admin page
-  		add_submenu_page('themes.php', __('Dynamic Widgets', DW_L10N_DOMAIN), __('Dynamic Widgets', DW_L10N_DOMAIN), 'edit_theme_options', 'dynwid-config', 'dynwid_disabled_page');
+  		if ( is_admin() ) {
+  			// Show errors in the admin page
+  			add_action('admin_menu', 'dynwid_disabled_add_admin_menu');
+  		}
   	}
   }
 
@@ -671,10 +670,10 @@
 	 */
 	function dynwid_save_postdata($post_id) {
 	  $DW = &$GLOBALS['DW'];
-	  
+
 	  if ( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] != 'autosave' ) {
 	  	$post_id = ( isset($_POST['post_ID']) && ! empty($_POST['post_ID']) ) ? intval($_POST['post_ID']) : 0;
-	  	
+
 	  	if ( $parent_id = wp_is_post_revision($post_id) ) {
 				$post_id = $parent_id;
 			}
@@ -687,18 +686,18 @@
 				} else {
 					$maintype = $post_type . '-post';
 				}
-		
+
 			  // Housekeeping
 			  $opt = $DW->getOpt('%','individual');
 			  foreach ( $opt as $widget ) {
 			    $DW->deleteOption($widget->widget_id, $maintype, $post_id);
 			  }
-		
+
 			  if ( array_key_exists('dw-single-post', $_POST) ) {
 			    $opt = $_POST['dw-single-post'];
 			    $default = 'yes';
 			    $default_single = '1';
-		
+
 			    foreach ( $opt as $widget_id ) {
 			      $opt_single = $DW->getOpt($widget_id, $post_type);
 			      if ( count($opt_single) > 0 ) {
@@ -707,16 +706,16 @@
 			            $default_single = $widget->value;
 			          }
 			        }
-		
+
 			        if ( $default_single == '0' ) {
 			          $default = 'no';
 			        }
 			      }
-		
+
 			      $DW->addMultiOption($widget_id, $maintype, $default, array($post_id));
 			    }
 			  } // END if array_key_exists
-			} // END if $post_id > 0 
+			} // END if $post_id > 0
 		} // END if ! autosave AND ! quick edit
 	}
 
@@ -782,6 +781,35 @@
 		} else {
 			return FALSE;
 		}
+	}
+
+	/**
+	 * dynwid_term_tree() AJAX lazy loader for Taxonomy terms tree
+	 * @since 1.5.4.2
+	 *
+	 * @return void
+	 */
+	function dynwid_term_tree() {
+		include_once(DW_MODULES . 'custompost_module.php');
+
+		$DW = &$GLOBALS['DW'];
+
+		$id = ( isset($_POST['id']) && ! empty($_POST['id']) ) ? sanitize_text_field( $_POST['id'] ) : 0;
+		$name = ( isset($_POST['name']) && ! empty($_POST['name']) ) ? sanitize_text_field( $_POST['name'] ) : '';
+		$prefix = ( isset($_POST['prefix']) && ! empty($_POST['prefix']) ) ? sanitize_text_field( $_POST['prefix'] ) : '';
+		$widget_id = ( isset($_POST['widget_id']) && ! empty($_POST['widget_id']) ) ? sanitize_text_field( $_POST['widget_id'] ) : '';
+
+		if ( intval($id) > 0 && ! empty($name) && ! empty($widget_id) ) {
+			$opt_tax = $DW->getDWOpt($widget_id, $prefix);
+			$opt_tax_childs = $DW->getDWOpt($widget_id, $prefix . '-childs');
+
+			$tree = DW_CustomPost::getTaxChilds($name, array(), $id, array());
+			if ( count($tree) > 0 ) {
+				DW_CustomPost::prtTax($widget_id, $name, $tree, $opt_tax->act, $opt_tax_childs->act, $prefix);
+			}
+		}
+
+		die();
 	}
 
 	/**

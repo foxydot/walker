@@ -15,6 +15,10 @@ $videos = array(
 		'title' => 'Pushing Local Development Data to a Staging&nbsp;Environment',
 		'desc' => 'This screencast demonstrates how you can push a local WordPress database
 			you\'ve been using for development to a staging environment.'
+	),
+	'0aR8-jC2XXM' => array(
+		'title' => 'Media Files Addon Demo',
+		'desc' => 'A short demo of how the Media Files addon allows you to sync up your WordPress Media Libraries.'
 	)
 );
 $licence = $this->get_licence_key();
@@ -48,7 +52,7 @@ $licence = $this->get_licence_key();
 		<ul>
 		<?php foreach ( $videos as $id => $video ) : ?>
 			<li class="video" data-video-id="<?php echo $id; ?>">
-				<a href="http://www.youtube.com/watch?v=<?php echo $id; ?>" target="_blank"><img src="http://img.youtube.com/vi/<?php echo $id; ?>/0.jpg" alt="" /></a>
+				<a href="//www.youtube.com/watch?v=<?php echo $id; ?>" target="_blank"><img src="//img.youtube.com/vi/<?php echo $id; ?>/0.jpg" alt="" /></a>
 
 				<h4><?php echo $video['title']; ?></h4>
 

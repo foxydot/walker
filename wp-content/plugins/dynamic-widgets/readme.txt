@@ -1,18 +1,22 @@
 === Plugin Name ===
 Contributors: Qurl
 Donate link: http://www.qurl.nl/dynamic-widgets/donate/
-Tags: widget, widgets, dynamic, sidebar, custom, rules, logic, admin, condition, conditional tags, hide, show, wpml, qtranslate, wpec, buddypress, pods, bbpress
+Tags: widget, widgets, dynamic, sidebar, custom, rules, logic, display, admin, condition, conditional tags, hide, show, wpml, qtranslate, wpec, buddypress, pods, bbpress
 Requires at least: 3.0.0
-Tested up to: 3.5
-Stable tag: 1.5.4
+Tested up to: 3.8.1
+Stable tag: 1.5.7
 
-Dynamic Widgets gives you full control on which pages your widgets will appear. It lets you dynamicly show or hide widgets on WordPress pages.
+Dynamic Widgets gives you full control on which pages a widget will display. It lets you dynamicly show or hide widgets on WordPress pages.
 
 == Description ==
 
-Dynamic Widgets gives you full control on which pages your widgets will appear. It lets you dynamically show or hide widgets on WordPress pages by setting conditional logic rules with just a few mouse clicks. No knowledge of PHP required. No fiddling around with conditional tags. You can set conditional rules by Role, Dates, Browser, Theme Template, Language (WPML or QTranslate), URL, for the Homepage, Single Posts, Attachments, Pages, Authors, Categories, Tags, Archives, Error Page, Search Page, Custom Post Types, Custom Post Type Archives, Custom Taxonomies in Custom Post Types, Custom Taxonomies Archives, WPEC/WPSC Categories, BuddyPress Components, BuddyPress Groups, Pods pages and bbPress.
+Dynamic Widgets gives you full control on which pages a widget will display. It lets you dynamically show or hide widgets on WordPress pages by setting conditional logic rules on a widget with just a few mouse clicks. No knowledge of PHP required. No fiddling around with conditional tags. You can set conditional rules by Role, Dates, Browser, Mobile devices, Theme Template, Language (WPML or QTranslate), URL, for the Homepage, Single Posts, Attachments, Pages, Authors, Categories, Tags, Archives, Error Page, Search Page, Custom Post Types, Custom Post Type Archives, Custom Taxonomies in Custom Post Types, Custom Taxonomies Archives, WPEC/WPSC Categories, BuddyPress Components, BuddyPress Groups, Pods pages and bbPress.
 
 For the latest news about Dynamic Widgets visit [my website](http://www.qurl.nl/).
+
+= Works or broken? =
+
+Please, vote for it. When you vote for broken, pick up some courage and tell in the [Forum](http://wordpress.org/support/plugin/dynamic-widgets) what is broken. I like to know, so I might be able to fix it to make the plugin also work for you.
 
 = I need your support =
 
@@ -26,6 +30,7 @@ It is very hard to continue development and support for this plugin without cont
   - Day of week
   - Weeknumbers
   - Browsers
+  - Mobile devices
   - Theme Templates
   - Languages (WPML or QTranslate)
   - URL
@@ -56,7 +61,7 @@ It is very hard to continue development and support for this plugin without cont
   - Browsers on browser name
   - Theme Templates on template name
   - Languages (WPML or QTranslate) on language
-  - URL on URL
+  - URL on starting with URL, ending on URL or exact match
   - Front page on first page
   - Single post pages on Author, Categories (including inheritance from hierarchical parents), Tags, Custom Taxonomies and/or Individual posts
   - Pages on Page Title and Custom Taxonomies, including inheritance from hierarchical parents
@@ -89,6 +94,7 @@ It is very hard to continue development and support for this plugin without cont
 	- German (de_DE) by Daniel Bihler
 	- Lithuanian (lt_LT) by Liudas Ališauskas
 	- Portuguese (pt_PT) by Pedro Nave
+	- Serbo-Croatian (sr_RS) by [Borisa Djuraskovic](http://www.webhostinghub.com/)
 	- Spanish (es_ES) by Eduardo Larequi
 
 == Installation ==
@@ -110,7 +116,7 @@ For the latest FAQ, please visit the [online FAQ](http://www.qurl.nl/dynamic-wid
 1. A properly working WordPress site (doh!).
 2. Your theme must have at least one dynamic sidebar.
 3. Your theme must call `wp_head()`.
-4. PHP5, PHP 5.3 is highly recommended.
+4. Minimum of PHP version 5.2.7, PHP 5.3 is highly recommended. 
 
 = My hoster is (still) using PHP4 =
 
@@ -120,7 +126,7 @@ Sorry, Dynamic Widgets is not compatible with PHP4. Look for another hosting com
 
 Yes, you can. In the Dynamic Widgets Overview page, click the 'Advanced >' link at the bottom. You should see if `wp_head()` is called in your theme. It is possible Dynamic Widgets can't detect if the theme is calling `wp_head()`. Please contact the author of the theme to ask for it. You can also of course just try Dynamic Widgets to see if it works.
 
-= Does the plugin work on WordPress 3.0 MU? =
+= Does the plugin work on a WordPress Network? =
 
 Yes, but only if you activate the plugin on a per site base. Network Activation is not supported.
 Extra note: It seems that sometimes for some reason DW does not show up on individual sites within a WP Network without a network activation. You can use [Multisite Plugin Manager](http://wordpress.org/extend/plugins/multisite-plugin-manager/) to overcome this problem.
@@ -175,6 +181,28 @@ Please check the [Issue Tracker](http://www.qurl.nl/dynamic-widgets/issue-tracke
 * Remove the directory 'dynamic-widgets' underneath to the `/wp-content/plugins/` directory.
 
 == Changelog ==
+
+= Version 1.5.7 =
+
+* Added Serbo-Croation language file (locale: sr_RS) - Hvala Borisa!
+* Added Mobile detection support
+* Bugfix for fatal error: Call to undefined function add_submenu_page() in dynamic-widgets.php on line 633 when the host is not meeting the requirements (anymore).
+* Bugfix for several notices about an undefined index and deprecated wpdb::escape()
+* Bugfix for Invalid arguments passed in custompost_module.php on line 216
+
+= Version 1.5.6 =
+
+* Added WordPress filter 'dynwid_urlprefix' in case Dynamic Widgets detects the URL wrong.
+* Added WordPress filter 'dynwid_taxonomies' to be able to remove taxonomies from the admin view.
+* Added WordPress filter 'dynwid_admin_modules' to be able to remove modules from the admin view by request of Rick Anderson from [Build Your Own Business Website](http://www.byobwebsite.com/) who made a financial contribution to make this possible.
+* Added Toggle all sections button for visually impaired users.
+* Bugfix for Notice: Trying to get property of non-object in post-template.php on line 1275.
+* Bugfix for not using a full PHP opening tag in dynwid_admin_overview.php.
+* Bugfix for exception rules in single post types sometimes not followed.
+* Bugfix for Warning: Declaration of DW_CustomPost::registerOption() should be compatible with DWModule::registerOption($dwoption)
+* Bugfix for WPML category fails to follow the rules with the help and financial support by [Advancis](http://advancis.net/).
+* Changed the taxonomy terms tree to use 'lazy loading' by request of Rick Anderson from [Build Your Own Business Website](http://www.byobwebsite.com/) who made a financial contribution to make this possible.
+* Moved minimum PHP version up to 5.2.7 because of a PHP bug in lower versions not exposing all class properties while in the right scope. Thanks Sébastien for finding out!
 
 = Version 1.5.4 =
 
@@ -398,13 +426,13 @@ Please check the [Issue Tracker](http://www.qurl.nl/dynamic-widgets/issue-tracke
 
 == Release notes ==
 
-This version has 3 bugs fixed.
+This version has 4 new features and 5 bugs fixed. See the changelog for details.
 
 == Upgrade Notice ==
 
-= 1.5.4 =
+= 1.5.7 =
 
-This version has 3 bugs fixed. Upgrade before you upgrade to WordPress 3.5.
+This version has 1 feature added, 1 language added and 3 bugs fixed.
 
 == Screenshots ==
 
