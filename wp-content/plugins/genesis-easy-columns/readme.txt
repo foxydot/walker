@@ -4,8 +4,8 @@ Contributors: Code96
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=63NWD4R6PNC76
 Tags: genesis columns, genesis columns shortcode, columns, wordpress columns, wp columns, column shortcode, column editor, columns, column, magazine layout, magazine columns
 Requires at least: 3.2
-Tested up to: 3.5.2
-Stable tag: 1.2
+Tested up to: 3.8
+Stable tag: 1.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,15 @@ Version 1.1 added an option for non-Genesis users to add the optional CSS via Se
 2. This screenshot contains all available column classes.
 
 == Changelog ==
+
+= 1.3.1 =
+Removed filter to disable wpautop.  Plugin will now strip all added <p>, <br>, etc.  
+
+= 1.3.1 =
+Updated plugin info.
+
+= 1.3 =
+Fixed bug that was adding p tags and line breaks to forms.
 
 = 1.2 =
 Allows nested shortcodes
