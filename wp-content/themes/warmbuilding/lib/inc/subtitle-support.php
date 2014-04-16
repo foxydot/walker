@@ -57,8 +57,8 @@ function msdlab_do_post_pagetop() {
     add_filter('pagetop_content','do_shortcode');
     $pagetop_content = apply_filters('pagetop_content', $pagetop_content);
     $pagetop_content = apply_filters('the_content', $pagetop_content);
+    do_action('pagetop_image');
 	print '<div id="pagetop">';
-	do_action('pagetop_image');
 	print '<div class="content">';
 				if($pagetop_title!=''){print '<h2 class="entry-title">'.$pagetop_title.'</h2>';}
 				if($pagetop_content!=''){print '<div class="entry-content">'.$pagetop_content.'</div>';}
@@ -76,13 +76,13 @@ add_action( 'pagetop_image', 'msd_post_image', 8 );
 function msd_post_image() {
 	global $post,$pagetop_metabox;
 	//setup thumbnail image args to be used with genesis_get_image();
-	if($pagetop_metabox->get_the_value('pagetop_content')!=''){
-	   $size = 'pagetop-image'; // Change this to whatever add_image_size you want
-    } else {
+	//if($pagetop_metabox->get_the_value('pagetop_content')!=''){
+	//   $size = 'pagetop-image'; // Change this to whatever add_image_size you want
+    //} else {
        $size = 'pagetop-hero'; // Change this to whatever add_image_size you want
-    }
+    //}
 	$default_attr = array(
-			'class' => "alignright attachment-$size $size",
+			'class' => "alignnone attachment-$size $size",
 			'alt'   => $post->post_title,
 			'title' => $post->post_title,
 	);
