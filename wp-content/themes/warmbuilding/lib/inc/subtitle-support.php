@@ -59,11 +59,13 @@ function msdlab_do_post_pagetop() {
     $pagetop_content = apply_filters('the_content', $pagetop_content);
     do_action('pagetop_image');
 	print '<div id="pagetop">';
+    if($pagetop_title!=''||$pagetop_content!=''){
 	print '<div class="content">';
 				if($pagetop_title!=''){print '<h2 class="entry-title">'.$pagetop_title.'</h2>';}
 				if($pagetop_content!=''){print '<div class="entry-content">'.$pagetop_content.'</div>';}
-	print	'</div>
-			</div>';
+	print	'</div>';
+	}
+	print '</div>';
 
 }
 
