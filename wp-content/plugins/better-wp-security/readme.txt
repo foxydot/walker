@@ -1,11 +1,11 @@
 
 === iThemes Security (formerly Better WP Security) ===
-Contributors: ithemes, ChrisWiegman, mattdanner, chrisbliss18
+Contributors: ithemes, ChrisWiegman, mattdanner, chrisjean
 Donate link: http://ithemes.com
 Tags: security, secure, multi-site, network, mu, login, lockdown, htaccess, hack, header, cleanup, ban, restrict, access, protect, protection, disable, images, image, hotlink, admin, username, database, prefix, wp-content, rename, directory, directories, secure, SSL, iThemes, BackupBuddy, Exchange, iThemes Exchange
 Requires at least: 3.8
-Tested up to: 3.8.1
-Stable tag: 4.0.10
+Tested up to: 3.9
+Stable tag: 4.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,8 @@ For complete site backups and the ability to restore or move WordPress easily, c
 
 = Translations =
 
+* Spanish by <a href="http://www.webhostinghub.com/">Andrew Kurtis</a>
+
 Please <a href="http://ithemes.com/contact" target="_blank">let us know</a> if you would like to contribute a translation.
 
 = Warning =
@@ -158,6 +160,121 @@ Free support may be available with the help of the community in the <a href="htt
 5. Easy-to-navigate Security dashboard
 
 == Changelog ==
+
+= 4.1.3 =
+* Make sure "remove write permissions" works
+* Better descriptions on white list
+* Add pro table of contents if needed
+* Make sure security admin bar item works
+* Make sure lockout message only happens when needed
+* Suppress errors on readlink calls
+* Make sure class is present for permanent ban
+* Make sure white list is an array
+* Fix white listed IPs not working
+* Log when Away-mode is triggered
+* Make sure away mode file isn't accidently deleted
+* Make sure away mode doesn't even allow access to the login form (as it didn't in 3.x)
+* Enhance warnings on "Change content directory" settings
+* Better descriptions on white lists
+* Fixed XMLRPC label
+* Better XMLRPC Dashboard status
+* Don't allow logout action on wp-login.php with hide backend
+* Better check for variable in SSL admin
+
+= 4.0.27 =
+* XMLRPC soft block should now work with WordPress mobile app
+* Make sure uploads directory is only working in blog 1 in multisite
+* Better checks for run method in module loader
+
+= 4.0.25 =
+* Make sure backup directory is present before trying to use it
+* Make sure backup file method is respected on all backup operations
+* Added ability to limit number of backups saved to disk
+* Minor typo and other fixes
+* Only load front-end classes as needed
+* Add link to free support at .org forums
+* Remove select(?ed) from suspicious query strings for 3.9 compatibility
+* Fixed domain mapping issue (requires http://wordpress.org/plugins/wordpress-mu-domain-mapping/ domain mapping plugin)
+* Remove array type errors on 404 pages
+* Remove remaining create function calls
+* Make sure logs directory is present before trying to use it
+* Log a message when witelisted host triggers a lockout
+* Don't create log files if they're not going to be used
+* Add pro tab if pro modules need it
+* Upgrade module loader to only load what is needed
+
+= 4.0.23 =
+* Fix sorting by count in 404 Logs
+* Minor code cleanup
+* Make sure all wp_enqueue_script dependencies are in proper format
+* Reduce priority of hide backend init for better compatibility with other plugins
+* SSL now logs users out when activating to prevent cookie conflicts
+* When activating SSL Log out the user to prevent cookie conflicts
+* Use LOCK_EX as a second file locking method on wp-config.php and .htaccess
+* Minor code cleanup
+* Make sure all wp_enqueue_script dependencies are in proper format
+
+= 4.0.21 =
+* Added ability to "soft" block XMLRPC to prevent pingback vulnerability while still allowing other access
+* Updated "Suspicious queary strings" to not block plugin updates
+* Update NGINX comment spam rewrite rules to better work with multi-site domain mapping
+* Move 404 hook in hide backend from wp to wp_loaded
+* Make sure super-admin role is maintained on multi-site when changing user id 1 and admin username at the same time
+* Make sure all redirects for hide backend and ssl are 302, not 301
+* Better resetting of SSL and disallow file editor on deactivation to account for more states
+* Make sure hide backend works with registration
+* Minor copy and other fixes
+* Update nginx rewrite rule on comment spam when domain mapping is active
+* Added the ability to disable file locking (old behavior)
+* Better file lock release (try more than 1 method) before failing
+* Don't automatically show file lock error on first attempt
+* Added Spanish translation by <a href="http://www.webhostinghub.com/">Andrew Kurtis</a>
+
+= 4.0.19 =
+* Clean up away mode to prevent lockouts on update or other points
+
+= 4.0.18 =
+* Make sure unset admin user field remains if the other setting has been fixed
+* Removed admin user from settings table of contents
+* Make sure array input is trimmed in file change module
+* Correct input type on file change settings sanitization
+* Use full URL on file change warning redirect to prevent invalid target
+* Reduce erroneous hide backend change warnings
+* When accessing htaccess or wpconfig make sure opening settings changes are 664 instead of 644 to reduce issues
+* Update hackrepair.com's Agents blacklist
+* Make sure global settings save button matches others
+* Fixed link in locout email
+* Email address settings retain end of line
+* Sanitize email addresses on save and not just use
+* Make sure whitelist is actually an array before trying to process
+* Make sure rewrite rules show on dashboard when file writing isnt allowed
+* Added extra information to dashboard server information to help troubleshooting
+
+= 4.0.16 =
+* Fixed bug preventing file change scanning from advancing when chunked
+* Don't autoload file list on non-multisite installations
+* Make sure away mode settings transfer from 3.x or disable away mode
+* Better descriptions on save buttons
+* Admin use "Fix it" Correctly goes to advanced page
+
+= 4.0.14 =
+* Execute permanent ban on the correct lockout count, not the next one
+* Updated quick ban rules to match standard ban rules (will work with proxy)
+* Fixed an NGINX rule that didn't actually block XMLRPC.php
+* Updated rule order on ban users
+* Fixed a bug that could prevent away from from turning off in certain time configurations (this resulted in the return to homepage on login)
+* Updated some function doc
+
+= 4.0.12 =
+* Added "Show intro" button next to screen options to bring the intro modal back
+* Added ability to use HTML in error messages
+* Minor copy and other tweaks
+* Private posts will now work with hide backend
+* Added an option for custom login action that can bypass hide login
+* Allow admin-ajax.php to bypass hide backend
+* Added filters for external backup plugins to register with the dashboard
+* Enable theme compatibility mode by default
+* Miscellaneous copy and function doc fixes
 
 = 4.0.10 =
 * only save post meta for ssl when the value is true
@@ -952,5 +1069,5 @@ This release is a complete rewrite from the ground up. Special thanks to Cory Mi
 
 == Upgrade Notice ==
 
-= 4.0.10 =
-Better WP Security is now iThemes Security with new features and a greatly improved code base. We recommend disabling Better WP Security before upgrading to 4.0.10 if you are not already on 4.0.
+= 4.1.3 =
+Better WP Security is now iThemes Security with new features and a greatly improved code base. We recommend disabling Better WP Security before upgrading to 4.1.3 if you are not already on 4.0 or greater.

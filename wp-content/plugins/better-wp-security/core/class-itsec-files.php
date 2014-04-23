@@ -16,7 +16,8 @@ final class ITSEC_Files {
 		$rewrite_rules,
 		$wpconfig_rules,
 		$rewrites_changed,
-		$config_changed;
+		$config_changed,
+		$write_files;
 
 	/**
 	 * Create and manage wp_config.php or .htaccess/nginx rewrites.
@@ -35,6 +36,19 @@ final class ITSEC_Files {
 		$this->config_changed   = false;
 		$this->rewrite_rules    = array();
 		$this->wpconfig_rules   = array();
+
+		//look for the tweaks module to see if we should reset to 0444
+		$tweaks = get_site_option( 'itsec_tweaks' );
+
+		if ( $tweaks !== false && isset( $tweaks['write_permissions'] ) ) {
+
+			$this->write_files = $tweaks['write_permissions'];
+
+		} else{
+
+			$this->write_files = false;
+
+		}
 
 		//Add the metabox
 		add_action( 'itsec_add_admin_meta_boxes', array( $this, 'add_admin_meta_boxes' ) );
@@ -81,7 +95,9 @@ final class ITSEC_Files {
 	 */
 	public function admin_init() {
 
-		if ( $this->rewrites_changed === true ) {
+		global $itsec_globals;
+
+		if ( $this->rewrites_changed === true && isset( $itsec_globals['settings']['write_files'] ) && $itsec_globals['settings']['write_files'] === true ) {
 
 			do_action( 'itsec_pre_save_rewrites' );
 
@@ -111,9 +127,13 @@ final class ITSEC_Files {
 
 			}
 
+		} elseif ( $this->rewrites_changed === true ) {
+
+			add_site_option( 'itsec_manual_update', true );
+
 		}
 
-		if ( $this->config_changed === true ) {
+		if ( $this->config_changed === true && isset( $itsec_globals['settings']['write_files'] ) && $itsec_globals['settings']['write_files'] === true ) {
 
 			do_action( 'itsec_pre_save_configs' );
 
@@ -130,11 +150,27 @@ final class ITSEC_Files {
 
 				}
 
+				if ( get_site_option( 'itsec_clear_login' ) == 1 ) {
+
+					delete_site_option( 'itsec_clear_login' );
+
+					wp_clear_auth_cookie();
+
+					$redirect_to = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '/wp-login.php?loggedout=true';
+					wp_safe_redirect( $redirect_to );
+					exit();
+
+				}
+
 			} else {
 
 				add_site_option( 'itsec_manual_update', true );
 
 			}
+
+		} elseif ( $this->config_changed === true ) {
+
+			add_site_option( 'itsec_manual_update', true );
 
 		}
 
@@ -207,6 +243,16 @@ final class ITSEC_Files {
 	 */
 	public function config_metabox_contents() {
 
+		foreach ( $this->file_modules as $module ) {
+
+			if ( isset( $module['config'] ) ) {
+
+				call_user_func_array( $module['config'], array() );
+
+			}
+
+		}
+
 		$rules_to_write = ''; //String of rules to insert into wp-config
 
 		//build the rules we need to write, replace or delete
@@ -262,8 +308,8 @@ final class ITSEC_Files {
 		//Make sure we can write to the file
 		$perms = substr( sprintf( '%o', @fileperms( $htaccess_file ) ), - 4 );
 
-		if ( $perms == '0444' ) {
-			@chmod( $htaccess_file, 0644 );
+		if ( $perms == '0444' || $this->write_files === true ) {
+			@chmod( $htaccess_file, 0664 );
 		}
 
 		//make sure the file exists and create it if it doesn't
@@ -304,14 +350,14 @@ final class ITSEC_Files {
 
 			$htaccess_contents = implode( PHP_EOL, $lines );
 
-			if ( ! @file_put_contents( $htaccess_file, $htaccess_contents ) ) {
+			if ( ! @file_put_contents( $htaccess_file, $htaccess_contents, LOCK_EX ) ) {
 				return false;
 			}
 
 		}
 
 		//reset file permissions if we changed them
-		if ( $perms == '0444' ) {
+		if ( $perms == '0444' || $this->write_files === true ) {
 			@chmod( $htaccess_file, 0444 );
 		}
 
@@ -363,11 +409,9 @@ final class ITSEC_Files {
 	 */
 	public function file_writer_init() {
 
-		global $itsec_globals;
-
 		$this->file_modules = apply_filters( 'itsec_file_modules', $this->file_modules );
 
-		if ( isset( $itsec_globals['settings']['write_files'] ) && $itsec_globals['settings']['write_files'] === true && ( get_site_option( 'itsec_config_changed' ) == '1' || get_site_option( 'itsec_rewrites_changed' ) == '1' ) ) {
+		if ( get_site_option( 'itsec_config_changed' ) == '1' || get_site_option( 'itsec_rewrites_changed' ) == '1' ) {
 
 			$this->rewrites_changed = get_site_option( 'itsec_rewrites_changed' ) == '1' ? true : false;
 			$this->config_changed   = get_site_option( 'itsec_config_changed' ) == '1' ? true : false;
@@ -395,8 +439,12 @@ final class ITSEC_Files {
 
 		clearstatcache();
 
-		$lock_file = $itsec_globals['ithemes_dir'] . '/' . sanitize_text_field( $lock_file ) . '.lock';
-		$dir_age   = @filectime( $lock_file );
+		if ( isset( $itsec_globals['settings']['lock_file'] ) && $itsec_globals['settings']['lock_file'] === true ) {
+			return true;
+		}
+
+		$lock_file    = $itsec_globals['ithemes_dir'] . '/' . sanitize_text_field( $lock_file ) . '.lock';
+		$dir_age      = @filectime( $lock_file );
 
 		if ( @mkdir( $lock_file ) === false ) {
 
@@ -412,6 +460,10 @@ final class ITSEC_Files {
 					return false;
 
 				}
+
+			} else {
+
+				return false;
 
 			}
 
@@ -475,73 +527,109 @@ final class ITSEC_Files {
 
 	public static function quick_ban( $host ) {
 
-		$host = trim( $host );
+		global $itsec_files;
 
-		if ( ITSEC_Lib::validates_ip_address( trim( $host ) ) ) {
+		if ( $itsec_files->get_file_lock( 'htaccess' ) ) {
 
-			$rule_open = array( '# BEGIN iThemes Security', '# BEGIN Better WP Security' );
+			$host = trim( $host );
 
-			$htaccess_file = ITSEC_Lib::get_htaccess();
+			if ( ITSEC_Lib::validates_ip_address( trim( $host ) ) ) {
 
-			if ( ITSEC_Lib::get_server() === 'nginx' ) { //NGINX rules
-				$host_rule = "\tdeny " . $host . ';' . PHP_EOL;
-			} else { //rules for all other servers
-				$host_rule = 'Deny from ' . trim( $host ) . PHP_EOL;
-			}
+				$rule_open = array( '# BEGIN iThemes Security', '# BEGIN Better WP Security' );
 
-			//Make sure we can write to the file
-			$perms = substr( sprintf( '%o', @fileperms( $htaccess_file ) ), - 4 );
+				$htaccess_file = ITSEC_Lib::get_htaccess();
 
-			@chmod( $htaccess_file, 0644 );
+				$host_rule = '#Quick ban IP. Will be updated on next formal rules save.' . PHP_EOL;
 
-			$htaccess_contents = @file( $htaccess_file );
+				if ( ITSEC_Lib::get_server() === 'nginx' ) { //NGINX rules
 
-			$has_itsec = false; //assume itsec hasn't written anything to htaccess
+					$host_rule .= "\tdeny " . $host . ';' . PHP_EOL;
 
-			foreach ( $htaccess_contents as $line_number => $line ) {
+				} else { //rules for all other servers
 
-				if ( in_array( trim( $line ), $rule_open ) ) {
-					$has_itsec = $line_number;
+					$dhost = str_replace( '.', '\\.', trim( $host ) ); //re-define $dhost to match required output for SetEnvIf-RegEX
+
+					$host_rule .= 'Order allow,deny' . PHP_EOL;
+					$host_rule .= "SetEnvIF REMOTE_ADDR \"^" . $dhost . "$\" DenyAccess" . PHP_EOL; //Ban IP
+					$host_rule .= "SetEnvIF X-FORWARDED-FOR \"^" . $dhost . "$\" DenyAccess" . PHP_EOL; //Ban IP from Proxy-User
+					$host_rule .= "SetEnvIF X-CLUSTER-CLIENT-IP \"^" . $dhost . "$\" DenyAccess" . PHP_EOL; //Ban IP for Cluster/Cloud-hosted WP-Installs
+					$host_rule .= 'Deny from env=DenyAccess' . PHP_EOL;
+					$host_rule .= 'Allow from all' . PHP_EOL;
+
+				}
+
+				//Make sure we can write to the file
+				$perms = substr( sprintf( '%o', @fileperms( $htaccess_file ) ), - 4 );
+
+				@chmod( $htaccess_file, 0664 );
+
+				$htaccess_contents = @file( $htaccess_file );
+
+				$has_itsec = false; //assume itsec hasn't written anything to htaccess
+
+				foreach ( $htaccess_contents as $line_number => $line ) {
+
+					if ( in_array( trim( $line ), $rule_open ) ) {
+						$has_itsec = $line_number;
+					}
+
+				}
+
+				if ( $has_itsec === false ) {
+
+					array_unshift(
+						$htaccess_contents,
+						'# BEGIN iThemes Security' . PHP_EOL,
+						$host_rule,
+						'# END iThemes Security' . PHP_EOL
+					);
+
+					$content = implode( '', $htaccess_contents );
+
+				} else {
+
+					$content = implode( '', $htaccess_contents );
+					$content = str_replace( '# BEGIN iThemes Security' . PHP_EOL, '# BEGIN iThemes Security' . PHP_EOL . $host_rule, $content );
+
+				}
+
+				if ( ! $f = @fopen( $htaccess_file, 'w+' ) ) {
+
+					return false; //we can't write to the file
+
+				}
+
+				@fwrite( $f, $content );
+
+				@fclose( $f );
+
+				//look for the tweaks module to see if we should reset to 0444
+				$tweaks = get_site_option( 'itsec_tweaks' );
+
+				if ( $tweaks !== false && isset( $tweaks['write_permissions'] ) ) {
+
+					$write_files = $tweaks['write_permissions'];
+
+				} else{
+
+					$write_files = false;
+
+				}
+
+				//reset file permissions if we changed them
+				if ( $perms == '0444' || $write_files === true ) {
+					@chmod( $htaccess_file, 0444 );
 				}
 
 			}
 
-			if ( $has_itsec === false ) {
+			$itsec_files->release_file_lock( 'htaccess' );
 
-				array_unshift(
-					$htaccess_contents,
-					'# BEGIN iThemes Security' . PHP_EOL,
-					$host_rule,
-					'# END iThemes Security' . PHP_EOL
-				);
-
-				$content = implode( '', $htaccess_contents );
-
-			} else {
-
-				$content = implode( '', $htaccess_contents );
-				$content = str_replace( '# BEGIN iThemes Security' . PHP_EOL, '# BEGIN iThemes Security' . PHP_EOL . $host_rule, $content );
-
-			}
-
-			if ( ! $f = @fopen( $htaccess_file, 'w+' ) ) {
-
-				return false; //we can't write to the file
-
-			}
-
-			@fwrite( $f, $content );
-
-			@fclose( $f );
-
-			//reset file permissions if we changed them
-			if ( $perms == '0444' ) {
-				@chmod( $htaccess_file, 0444 );
-			}
+			return true;
 
 		}
 
-		return true;
+		return false;
 
 	}
 
@@ -560,9 +648,35 @@ final class ITSEC_Files {
 
 		global $itsec_globals;
 
+		if ( isset( $itsec_globals['settings']['lock_file'] ) && $itsec_globals['settings']['lock_file'] === true ) {
+			return true;
+		}
+
 		$lock_file = $itsec_globals['ithemes_dir'] . '/' . sanitize_text_field( $lock_file ) . '.lock';
 
-		return @rmdir( $lock_file );
+		if ( ! is_dir( $lock_file ) ) {
+
+			return true;
+
+		} else {
+
+			if ( ! @rmdir( $lock_file ) ) {
+
+				@chmod( $itsec_globals['ithemes_dir'], 0775 );
+
+				if ( file_exists( $lock_file . '/Thumbs.db' ) ) {
+					unlink( $lock_file . '/Thumbs.db' );
+				}
+
+				return @rmdir( $lock_file );
+
+			} else {
+
+				return true;
+
+			}
+
+		}
 
 	}
 
@@ -587,6 +701,16 @@ final class ITSEC_Files {
 	 * @return void
 	 */
 	public function rewrite_metabox_contents() {
+
+		foreach ( $this->file_modules as $module ) {
+
+			if ( isset( $module['rewrite'] ) ) {
+
+				call_user_func_array( $module['rewrite'], array() );
+
+			}
+
+		}
 
 		$rewrite_rules = $this->build_rewrites();
 
@@ -624,7 +748,7 @@ final class ITSEC_Files {
 
 		global $itsec_globals;
 
-		if ( ! is_array( $this-> file_modules ) ) {
+		if ( ! is_array( $this->file_modules ) ) {
 			return;
 		}
 
@@ -669,11 +793,11 @@ final class ITSEC_Files {
 
 					}
 
-				} elseif ( $success === true && $release === false ) {
+				} elseif ( $success === true ) {
 
 					return array(
 						'success' => false,
-						'text'    => __( 'Unable to release a lock on your .htaccess or nginx.conf file. If the problem persists contact support.', 'it-l10n-better-wp-security' ),
+						'text'    => __( 'It looks like we have not been able to release the lock file on your computer. Most likely this is due to folder permissions on your computer. You can manually delete and folders with the ".lock" extension in ', 'it-l10n-better-wp-security' ) . $itsec_globals['ithemes_dir'] . __( ' and make sure that the folder allows for the creation AND deletion of subfolders. If the issue continues please contact your web host. This message is advisory only and should not affect the functionality of the plugin.', 'it-l10n-better-wp-security' ),
 					);
 
 				} else {
@@ -715,7 +839,7 @@ final class ITSEC_Files {
 
 		global $itsec_globals;
 
-		if ( ! is_array( $this-> file_modules ) ) {
+		if ( ! is_array( $this->file_modules ) ) {
 			return;
 		}
 
@@ -993,12 +1117,12 @@ final class ITSEC_Files {
 				//Make sure we can write to the file
 				$perms = substr( sprintf( '%o', @fileperms( $htaccess_file ) ), - 4 );
 
-				@chmod( $htaccess_file, 0644 );
+				@chmod( $htaccess_file, 0664 );
 
-				if ( ! @file_put_contents( $htaccess_file, $htaccess_contents ) ) {
+				if ( ! @file_put_contents( $htaccess_file, $htaccess_contents, LOCK_EX ) ) {
 
 					//reset file permissions if we changed them
-					if ( $perms == '0444' ) {
+					if ( $perms == '0444' || $this->write_files === true ) {
 						@chmod( $htaccess_file, 0444 );
 					}
 
@@ -1007,7 +1131,7 @@ final class ITSEC_Files {
 				}
 
 				//reset file permissions if we changed them
-				if ( $perms == '0444' ) {
+				if ( $perms == '0444' || $this->write_files === true ) {
 					@chmod( $htaccess_file, 0444 );
 				}
 
@@ -1158,12 +1282,12 @@ final class ITSEC_Files {
 			//Make sure we can write to the file
 			$perms = substr( sprintf( '%o', @fileperms( $config_file ) ), - 4 );
 
-			@chmod( $config_file, 0644 );
+			@chmod( $config_file, 0664 );
 
-			if ( ! @file_put_contents( $config_file, $config_contents ) ) {
+			if ( ! @file_put_contents( $config_file, $config_contents, LOCK_EX ) ) {
 
 				//reset file permissions if we changed them
-				if ( $perms == '0444' ) {
+				if ( $perms == '0444' || $this->write_files === true ) {
 					@chmod( $config_file, 0444 );
 				}
 
@@ -1171,7 +1295,7 @@ final class ITSEC_Files {
 			}
 
 			//reset file permissions if we changed them
-			if ( $perms == '0444' ) {
+			if ( $perms == '0444' || $this->write_files === true ) {
 				@chmod( $config_file, 0444 );
 			}
 

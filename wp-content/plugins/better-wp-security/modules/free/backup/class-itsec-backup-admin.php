@@ -8,7 +8,7 @@ class ITSEC_Backup_Admin {
 		$module_path,
 		$settings;
 
-	function __construct( $core, $module ) {
+	function run( $core, $module ) {
 
 		if ( is_admin() ) {
 
@@ -109,8 +109,8 @@ class ITSEC_Backup_Admin {
 
 		if ( isset( get_current_screen()->id ) && strpos( get_current_screen()->id, 'security_page_toplevel_page_itsec_settings' ) !== false ) {
 
-			wp_enqueue_script( 'itsec_backup_js', $this->module_path . 'js/admin-backup.js', 'jquery', $itsec_globals['plugin_build'] );
-			wp_enqueue_script( 'jquery_multiselect', $this->module_path . 'js/jquery.multi-select.js', 'jquery', $itsec_globals['plugin_build'] );
+			wp_enqueue_script( 'itsec_backup_js', $this->module_path . 'js/admin-backup.js', array( 'jquery' ), $itsec_globals['plugin_build'] );
+			wp_enqueue_script( 'jquery_multiselect', $this->module_path . 'js/jquery.multi-select.js', array( 'jquery' ), $itsec_globals['plugin_build'] );
 
 			wp_register_style( 'itsec_ms_styles', $this->module_path . 'css/multi-select.css' ); //add multi-select css
 			wp_enqueue_style( 'itsec_ms_styles' );
@@ -160,16 +160,25 @@ class ITSEC_Backup_Admin {
 	 */
 	public function dashboard_status( $statuses ) {
 
-
 		if ( class_exists( 'backupbuddy_api0' ) && sizeof( backupbuddy_api0::getSchedules() ) >= 1 ) {
 
 			$status_array = 'safe-medium';
-			$status = array( 'text' => __( 'Your site is performing scheduled database and file backups.', 'it-l10n-better-wp-security' ), 'link' => '?page=pb_backupbuddy_scheduling', );
+			$status       = array( 'text' => __( 'Your site is performing scheduled database and file backups.', 'it-l10n-better-wp-security' ), 'link' => '?page=pb_backupbuddy_scheduling', );
 
 		} elseif ( class_exists( 'backupbuddy_api0' ) ) {
 
 			$status_array = 'medium';
-			$status = array( 'text' => __( 'BackupBuddy is installed but backups do not appear to have been scheduled. Please schedule backups.', 'it-l10n-better-wp-security' ), 'link' => '?page=pb_backupbuddy_scheduling', );
+			$status       = array( 'text' => __( 'BackupBuddy is installed but backups do not appear to have been scheduled. Please schedule backups.', 'it-l10n-better-wp-security' ), 'link' => '?page=pb_backupbuddy_scheduling', );
+
+		} elseif ( $this->has_backup() === true && $this->scheduled_backup() === true ) {
+
+			$status_array = 'safe-medium';
+			$status       = array( 'text' => __( 'You are using a 3rd party backup solution.', 'it-l10n-better-wp-security' ), 'link' => $this->external_backup_link(), );
+
+		} elseif ( $this->has_backup() === true ) {
+
+			$status_array = 'medium';
+			$status       = array( 'text' => __( 'It looks like you have a 3rd-party backup solution in place but are not using it. Please turn on scheduled backups.', 'it-l10n-better-wp-security' ), 'link' => $this->external_backup_link(), );
 
 		} elseif ( $this->settings['enabled'] === true ) {
 
@@ -274,6 +283,30 @@ class ITSEC_Backup_Admin {
 		$content .= '<p class="description"> ' . __( 'Some plugins can create log files in your database. While these logs might be handy for some functions, they can also take up a lot of space and, in some cases, even make backing up your database almost impossible. Select log tables above to exclude their data from the backup. Note: The table itself will be backed up, but not the data in the table.', 'it-l10n-better-wp-security' ) . '</p>';
 
 		echo $content;
+
+	}
+
+	public function has_backup() {
+
+		$has_backup = false;
+
+		return apply_filters( 'itsec_has_external_backup', $has_backup );
+
+	}
+
+	public function scheduled_backup() {
+
+		$has_backup = false;
+
+		return apply_filters( 'itsec_scheduled_external_backup', $has_backup );
+
+	}
+
+	public function external_backup_link() {
+
+		$backup_link = '#itsec_backup_enabled';
+
+		return apply_filters( 'itsec_external_backup_link', $backup_link );
 
 	}
 
@@ -382,6 +415,14 @@ class ITSEC_Backup_Admin {
 		);
 
 		add_settings_field(
+			'itsec_backup[retain]',
+			__( 'Backups to Retain', 'it-l10n-better-wp-security' ),
+			array( $this, 'retain' ),
+			'security_page_toplevel_page_itsec_settings',
+			'backup-settings-2'
+		);
+
+		add_settings_field(
 			'itsec_backup[zip]',
 			__( 'Compress Backup Files', 'it-l10n-better-wp-security' ),
 			array( $this, 'zip' ),
@@ -471,7 +512,7 @@ class ITSEC_Backup_Admin {
 
 		settings_fields( 'security_page_toplevel_page_itsec_settings' );
 
-		echo '<input class="button-primary" name="submit" type="submit" value="' . __( 'Save Changes', 'it-l10n-better-wp-security' ) . '" />' . PHP_EOL;
+		echo '<input class="button-primary" name="submit" type="submit" value="' . __( 'Save All Changes', 'it-l10n-better-wp-security' ) . '" />' . PHP_EOL;
 
 		echo '</p>' . PHP_EOL;
 
@@ -585,6 +626,27 @@ class ITSEC_Backup_Admin {
 	}
 
 	/**
+	 * echos Files to Retain Field
+	 *
+	 * @since 4.0.27
+	 *
+	 * @return void
+	 */
+	public function retain() {
+
+		if ( isset( $this->settings['retain'] ) ) {
+			$retain = absint( $this->settings['retain'] );
+		} else {
+			$retain = 0;
+		}
+
+		echo '<input class="small-text" name="itsec_backup[retain]" id="itsec_backup_retain" value="' . $retain . '" type="text">';
+		echo '<label for="itsec_backup_retain"> ' . __( 'Backups', 'it-l10n-better-wp-security' ) . '</label>';
+		echo '<p class="description"> ' . __( 'The number of backups that should be kept on disk. This only applies to backups saved to disk. Set to "0" to disable.', 'it-l10n-better-wp-security' ) . '</p>';
+
+	}
+
+	/**
 	 * Sanitize and validate input
 	 *
 	 * @param  Array $input array of input fields
@@ -601,6 +663,7 @@ class ITSEC_Backup_Admin {
 		$input['method']    = isset( $input['method'] ) ? intval( $input['method'] ) : 0;
 		$input['location']  = isset( $input['location'] ) ? sanitize_text_field( $input['location'] ) : $itsec_globals['ithemes_backup_dir'];
 		$input['last_run']  = isset( $this->settings['last_run'] ) ? $this->settings['last_run'] : 0;
+		$input['retain']    = isset( $input['retain'] ) ? absint( $input['retain'] ) : 0;
 
 		if ( isset( $input['location'] ) && $input['location'] != $itsec_globals['ithemes_backup_dir'] ) {
 			$good_path = ITSEC_Lib::validate_path( $input['location'] );

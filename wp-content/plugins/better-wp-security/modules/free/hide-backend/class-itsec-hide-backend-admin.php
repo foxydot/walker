@@ -7,7 +7,7 @@ class ITSEC_Hide_Backend_Admin {
 		$core,
 		$module_path;
 
-	function __construct( $core ) {
+	function run( $core ) {
 
 		if ( is_admin() ) {
 
@@ -86,7 +86,7 @@ class ITSEC_Hide_Backend_Admin {
 				__( 'Please note this may be different than what you sent as the URL was sanitized to meet various requirements.', 'it-l10n-better-wp-security' )
 			);
 
-			wp_enqueue_script( 'itsec_hide_backend_js', $this->module_path . 'js/admin-hide-backend.js', 'jquery', $itsec_globals['plugin_build'] );
+			wp_enqueue_script( 'itsec_hide_backend_js', $this->module_path . 'js/admin-hide-backend.js', array( 'jquery' ), $itsec_globals['plugin_build'] );
 			wp_localize_script(
 				'itsec_hide_backend_js',
 				'itsec_hide_backend',
@@ -280,6 +280,33 @@ class ITSEC_Hide_Backend_Admin {
 	}
 
 	/**
+	 * echos Hide Backend Slug  Field
+	 *
+	 * @since 4.0.6
+	 *
+	 * @return void
+	 */
+	public function hide_backend_post_logout_slug() {
+
+		if ( ( get_option( 'permalink_structure' ) == '' || get_option( 'permalink_structure' ) == false ) && ! is_multisite() ) {
+
+			$content = '';
+
+		} else {
+
+			$slug = sanitize_title( isset( $this->settings['post_logout_slug'] ) ? $this->settings['post_logout_slug'] : '' );
+
+			$content = '<input name="itsec_hide_backend[post_logout_slug]" id="itsec_hide_backend_strong_passwords_post_logout_slug" value="' . $slug . '" type="text"><br />';
+			$content .= '<label for="itsec_hide_backend_strong_passwords_post_logout_slug">' . __( 'Custom Action:', 'it-l10n-better-wp-security' ) . '</label>';
+			$content .= '<p class="description">' . __( 'WordPress uses the "action" variable to handle many login and logout functions. By default this plugin can handle the normal ones but some plugins and themes may utilize a custom action (such as logging out of a private post). If you need a custom action please enter it here.', 'it-l10n-better-wp-security' ) . '</p>';
+
+		}
+
+		echo $content;
+
+	}
+
+	/**
 	 * echos Hide Backend  theme compatibility Field
 	 *
 	 * @since 4.0.6
@@ -432,6 +459,14 @@ class ITSEC_Hide_Backend_Admin {
 			'hide_backend-settings'
 		);
 
+		add_settings_field(
+			'itsec_hide_backend[post_logout_slug]',
+			__( 'Custom Login Slug', 'it-l10n-better-wp-security' ),
+			array( $this, 'hide_backend_post_logout_slug' ),
+			'security_page_toplevel_page_itsec_settings',
+			'hide_backend-settings'
+		);
+
 		//Register the settings field for the entire module
 		register_setting(
 			'security_page_toplevel_page_itsec_settings',
@@ -459,7 +494,7 @@ class ITSEC_Hide_Backend_Admin {
 
 		settings_fields( 'security_page_toplevel_page_itsec_settings' );
 
-		echo '<input class="button-primary" name="submit" type="submit" value="' . __( 'Save Changes', 'it-l10n-better-wp-security' ) . '" />' . PHP_EOL;
+		echo '<input class="button-primary" name="submit" type="submit" value="' . __( 'Save All Changes', 'it-l10n-better-wp-security' ) . '" />' . PHP_EOL;
 
 		echo '</p>' . PHP_EOL;
 
@@ -536,7 +571,17 @@ class ITSEC_Hide_Backend_Admin {
 
 		}
 
-		if ( $input['slug'] != $this->settings['slug'] ) {
+		if ( isset( $input['post_logout_slug'] ) ) {
+
+			$input['post_logout_slug'] = sanitize_title( $input['post_logout_slug'] );
+
+		} else {
+
+			$input['post_logout_slug'] = '';
+
+		}
+
+		if ( $input['slug'] != $this->settings['slug'] && $input['enabled'] === true ) {
 			add_site_option( 'itsec_hide_backend_new_slug', $input['slug'] );
 		}
 
